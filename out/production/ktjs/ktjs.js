@@ -4,17 +4,18 @@ if (typeof kotlin === 'undefined') {
 var ktjs = function (_, Kotlin) {
   'use strict';
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
   var Unit = Kotlin.kotlin.Unit;
   var throwCCE = Kotlin.throwCCE;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var ensureNotNull = Kotlin.ensureNotNull;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
-  var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
   var toBoxedChar = Kotlin.toBoxedChar;
   var subnet_list;
   var ips;
   var subnet_masks;
   var total_host;
+  var network_addr;
   function main$lambda(it) {
     calculate();
     return Unit;
@@ -33,6 +34,7 @@ var ktjs = function (_, Kotlin) {
     subnet_masks = split(subnet_list.get_za3lpa$(subnet_mask.selectedIndex), ['.']);
     ensureNotNull(document.getElementById('ip_address')).innerHTML = ip.value;
     network_address();
+    broadcast_addr();
     total_hosts(toInt(subnet_mask.value));
     usable_hosts();
     ensureNotNull(document.getElementById('subnet_mask')).innerHTML = subnet_list.get_za3lpa$(subnet_mask.selectedIndex);
@@ -43,14 +45,27 @@ var ktjs = function (_, Kotlin) {
     ensureNotNull(document.getElementById('short')).innerHTML = ip.value + '/' + subnet_mask.value;
   }
   function network_address() {
-    var network_address = mutableListOf(['0', '0', '0', '0']);
     for (var i = 0; i <= 3; i++) {
       var x = toInt(ensureNotNull(ips).get_za3lpa$(i));
       var y = toInt(ensureNotNull(subnet_masks).get_za3lpa$(i));
       x = x & y;
-      network_address.set_wxm5ur$(i, x.toString());
+      network_addr.set_wxm5ur$(i, x.toString());
     }
-    ensureNotNull(document.getElementById('nw_address')).innerHTML = strings_to_string(network_address);
+    ensureNotNull(document.getElementById('nw_address')).innerHTML = strings_to_string(network_addr);
+  }
+  function broadcast_addr() {
+    var broadcast_addr = mutableListOf([network_addr.get_za3lpa$(0), network_addr.get_za3lpa$(1), network_addr.get_za3lpa$(2), network_addr.get_za3lpa$(3)]);
+    for (var i = 0; i <= 3; i++) {
+      if (toInt(broadcast_addr.get_za3lpa$(i)) === 0) {
+        var x = 255 - toInt(ensureNotNull(subnet_masks).get_za3lpa$(i)) | 0;
+        broadcast_addr.set_wxm5ur$(i, x.toString());
+      }
+    }
+    ensureNotNull(document.getElementById('broadcast_addr')).innerHTML = strings_to_string(broadcast_addr);
+    var ip_range = mutableListOf([network_addr.get_za3lpa$(0), network_addr.get_za3lpa$(1), network_addr.get_za3lpa$(2), network_addr.get_za3lpa$(3)]);
+    ip_range.set_wxm5ur$(3, (toInt(ip_range.get_za3lpa$(3)) + 1 | 0).toString());
+    broadcast_addr.set_wxm5ur$(3, (toInt(broadcast_addr.get_za3lpa$(3)) - 1 | 0).toString());
+    ensureNotNull(document.getElementById('uhir')).innerHTML = strings_to_string(ip_range) + ' - ' + strings_to_string(broadcast_addr);
   }
   var Math_0 = Math;
   function total_hosts(cidr) {
@@ -133,9 +148,18 @@ var ktjs = function (_, Kotlin) {
       total_host = value;
     }
   });
+  Object.defineProperty(_, 'network_addr', {
+    get: function () {
+      return network_addr;
+    },
+    set: function (value) {
+      network_addr = value;
+    }
+  });
   _.main_kand9s$ = main;
   _.calculate = calculate;
   _.network_address = network_address;
+  _.broadcast_addr = broadcast_addr;
   _.total_hosts_za3lpa$ = total_hosts;
   _.usable_hosts = usable_hosts;
   _.ip_class = ip_class;
@@ -146,6 +170,7 @@ var ktjs = function (_, Kotlin) {
   ips = null;
   subnet_masks = null;
   total_host = 0.0;
+  network_addr = mutableListOf(['0', '0', '0', '0']);
   main([]);
   Kotlin.defineModule('ktjs', _);
   return _;

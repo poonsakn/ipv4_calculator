@@ -15,6 +15,8 @@ var ips: List<String>? = null
 var subnet_masks: List<String>? = null
 var total_host: Double = 0.0
 
+var network_addr = mutableListOf<String>("0", "0", "0", "0")
+
 fun main(args: Array<String>) {
     val submit = document.getElementById("submit-btn")
     if (submit != null) {
@@ -34,6 +36,7 @@ fun calculate() {
 
     document.getElementById("ip_address")!!.innerHTML = ip.value
     network_address()
+    broadcast_addr()
     total_hosts(subnet_mask.value.toInt())
     usable_hosts()
     document.getElementById("subnet_mask")!!.innerHTML = subnet_list[subnet_mask.selectedIndex]
@@ -45,14 +48,29 @@ fun calculate() {
 }
 
 fun network_address() {
-    var network_address = mutableListOf<String>("0", "0", "0", "0")
     for (i in 0..3) {
         var x = ips!![i].toInt()
         var y = subnet_masks!![i].toInt()
         x = x and y
-        network_address[i] = x.toString()
+        network_addr[i] = x.toString()
     }
-    document.getElementById("nw_address")!!.innerHTML = strings_to_string(network_address)
+    document.getElementById("nw_address")!!.innerHTML = strings_to_string(network_addr)
+}
+
+
+fun broadcast_addr() {
+    var broadcast_addr = mutableListOf<String>(network_addr[0], network_addr[1], network_addr[2], network_addr[3])
+    for (i in 0..3) {
+        if (broadcast_addr[i].toInt() == 0) {
+            var x = 255 - subnet_masks!![i].toInt()
+            broadcast_addr[i] = x.toString()
+        }
+    }
+    document.getElementById("broadcast_addr")!!.innerHTML = strings_to_string(broadcast_addr)
+    var ip_range = mutableListOf<String>(network_addr[0], network_addr[1], network_addr[2], network_addr[3])
+    ip_range[3] = (ip_range[3].toInt()+1).toString()
+    broadcast_addr[3] = (broadcast_addr[3].toInt()-1).toString()
+    document.getElementById("uhir")!!.innerHTML = strings_to_string(ip_range) + " - " + strings_to_string(broadcast_addr)
 }
 
 fun total_hosts(cidr: Int) {

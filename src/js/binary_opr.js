@@ -22,20 +22,15 @@ function bin_subnet_mask() {
 
         strs[i] = x.toString(2);
         strs[i] = formatNumberLength(strs[i], 8);
-        // console.log(strs[i]);
+        document.getElementById("bin_subnet_mask").innerHTML = strs[0] + '.' + strs[1] + '.' + strs[2] + '.' + strs[3]
     }
-    document.getElementById("bin_subnet_mask").innerHTML = strs[0] + '.' + strs[1] + '.' + strs[2] + '.' + strs[3]
 }
 
 function bin_int_hex_id() {
     var ip = document.getElementById("ipv4_ip");
     var ips = ip.value.split(".");
-    console.log(ip.value);
-    console.log(ips[1]);
-
     for (i = 0; i <= 3; i++) {
         var x = parseInt(ips[i]);
-        console.log("x: " + x);
         ips[i] = x.toString(2);
         ips[i] = formatNumberLength(ips[i], 8);
     }
