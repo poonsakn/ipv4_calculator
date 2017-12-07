@@ -8,19 +8,19 @@ var ktjs = function (_, Kotlin) {
   var throwCCE = Kotlin.throwCCE;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var ensureNotNull = Kotlin.ensureNotNull;
-  var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
+  var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
   var toBoxedChar = Kotlin.toBoxedChar;
   var subnet_list;
   var ips;
   var subnet_masks;
+  var total_host;
   function main$lambda(it) {
     calculate();
     return Unit;
   }
   function main(args) {
-    var submit = document.getElementById('sub' +
-        'mit-btn');
+    var submit = document.getElementById('submit-btn');
     if (submit != null) {
       submit.addEventListener('click', main$lambda);
     }
@@ -33,9 +33,14 @@ var ktjs = function (_, Kotlin) {
     subnet_masks = split(subnet_list.get_za3lpa$(subnet_mask.selectedIndex), ['.']);
     ensureNotNull(document.getElementById('ip_address')).innerHTML = ip.value;
     network_address();
+    total_hosts(toInt(subnet_mask.value));
+    usable_hosts();
     ensureNotNull(document.getElementById('subnet_mask')).innerHTML = subnet_list.get_za3lpa$(subnet_mask.selectedIndex);
     wildcard_mask();
-    ensureNotNull(document.getElementById('cidr')).innerHTML = '/' + subnet_mask.value.toString();
+    ip_class();
+    ip_type();
+    ensureNotNull(document.getElementById('cidr')).innerHTML = '/' + subnet_mask.value;
+    ensureNotNull(document.getElementById('short')).innerHTML = ip.value + '/' + subnet_mask.value;
   }
   function network_address() {
     var network_address = mutableListOf(['0', '0', '0', '0']);
@@ -46,6 +51,46 @@ var ktjs = function (_, Kotlin) {
       network_address.set_wxm5ur$(i, x.toString());
     }
     ensureNotNull(document.getElementById('nw_address')).innerHTML = strings_to_string(network_address);
+  }
+  var Math_0 = Math;
+  function total_hosts(cidr) {
+    var n = 32 - cidr | 0;
+    total_host = Math_0.pow(2.0, n);
+    ensureNotNull(document.getElementById('total_hosts')).innerHTML = total_host.toString();
+  }
+  function usable_hosts() {
+    ensureNotNull(document.getElementById('usable_hosts')).innerHTML = (total_host - 2).toString();
+  }
+  function ip_class() {
+    if (toInt(ensureNotNull(ips).get_za3lpa$(0)) <= 127) {
+      ensureNotNull(document.getElementById('ip_class')).innerHTML = 'A';
+    }
+     else if (toInt(ensureNotNull(ips).get_za3lpa$(0)) <= 191) {
+      ensureNotNull(document.getElementById('ip_class')).innerHTML = 'B';
+    }
+     else if (toInt(ensureNotNull(ips).get_za3lpa$(0)) <= 223) {
+      ensureNotNull(document.getElementById('ip_class')).innerHTML = 'C';
+    }
+     else if (toInt(ensureNotNull(ips).get_za3lpa$(0)) <= 239) {
+      ensureNotNull(document.getElementById('ip_class')).innerHTML = 'D';
+    }
+     else {
+      ensureNotNull(document.getElementById('ip_class')).innerHTML = 'E';
+    }
+  }
+  function ip_type() {
+    if (toInt(ensureNotNull(ips).get_za3lpa$(0)) === 10) {
+      ensureNotNull(document.getElementById('ip_type')).innerHTML = 'Private';
+    }
+     else if (toInt(ensureNotNull(ips).get_za3lpa$(0)) === 172 && toInt(ensureNotNull(ips).get_za3lpa$(1)) === 16) {
+      ensureNotNull(document.getElementById('ip_type')).innerHTML = 'Private';
+    }
+     else if (toInt(ensureNotNull(ips).get_za3lpa$(0)) === 192 && toInt(ensureNotNull(ips).get_za3lpa$(1)) === 168) {
+      ensureNotNull(document.getElementById('ip_type')).innerHTML = 'Private';
+    }
+     else {
+      ensureNotNull(document.getElementById('ip_type')).innerHTML = 'Public';
+    }
   }
   function wildcard_mask() {
     var wildcard_masks = mutableListOf(['0', '0', '0', '0']);
@@ -80,14 +125,27 @@ var ktjs = function (_, Kotlin) {
       subnet_masks = value;
     }
   });
+  Object.defineProperty(_, 'total_host', {
+    get: function () {
+      return total_host;
+    },
+    set: function (value) {
+      total_host = value;
+    }
+  });
   _.main_kand9s$ = main;
   _.calculate = calculate;
   _.network_address = network_address;
+  _.total_hosts_za3lpa$ = total_hosts;
+  _.usable_hosts = usable_hosts;
+  _.ip_class = ip_class;
+  _.ip_type = ip_type;
   _.wildcard_mask = wildcard_mask;
   _.strings_to_string_a0weo2$ = strings_to_string;
   subnet_list = listOf(['128.0.0.0', '192.0.0.0', '224.0.0.0', '240.0.0.0', '248.0.0.0', '252.0.0.0', '254.0.0.0', '255.0.0.0', '255.128.0.0', '255.192.0.0', '255.224.0.0', '255.240.0.0', '255.248.0.0', '255.252.0.0', '255.254.0.0', '255.255.0.0', '255.255.128.0', '255.255.192.0', '255.255.224.0', '255.255.240.0', '255.255.248.0', '255.255.252.0', '255.255.254.0', '255.255.255.0', '255.255.255.128', '255.255.255.192', '255.255.255.224', '255.255.255.240', '255.255.255.248', '255.255.255.252', '255.255.255.254', '255.255.255.255']);
   ips = null;
   subnet_masks = null;
+  total_host = 0.0;
   main([]);
   Kotlin.defineModule('ktjs', _);
   return _;
