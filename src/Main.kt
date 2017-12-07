@@ -33,6 +33,8 @@ fun calculate(){
     document.getElementById("ip_address")!!.innerHTML = ip.value
     network_address()
     document.getElementById("subnet_mask")!!.innerHTML = subnet_list[subnet_mask.selectedIndex]
+    wildcard_mask()
+    document.getElementById("cidr")!!.innerHTML = "/" + subnet_mask.value   .toString()
 }
 
 fun network_address () {
@@ -46,7 +48,25 @@ fun network_address () {
     document.getElementById("nw_address")!!.innerHTML = strings_to_string(network_address)
 }
 
+fun wildcard_mask () {
+    var wildcard_masks = mutableListOf<String>("0", "0", "0", "0")
+    for (i in 0..3) {
+        var x = 255 - subnet_masks!![i].toInt()
+        wildcard_masks[i] = x.toString()
+    }
+    document.getElementById("wildcard_mask")!!.innerHTML = strings_to_string(wildcard_masks)
+}
+
 fun strings_to_string (strs: MutableList<String>): String {
     var str = strs[0] + '.' +strs[1] + '.' +strs[2] + '.' +strs[3]
         return str
 }
+
+//fun bin_subnet_mask () {
+//    var bin_subnet_masks = mutableListOf<String>("0", "0", "0", "0")
+//    for (i in 0..3) {
+//        var x = bin_subnet_masks[i].toInt()
+//        x.toString()
+//    }
+//}
+

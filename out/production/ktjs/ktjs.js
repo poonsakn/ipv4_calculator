@@ -19,7 +19,8 @@ var ktjs = function (_, Kotlin) {
     return Unit;
   }
   function main(args) {
-    var submit = document.getElementById('submit-btn');
+    var submit = document.getElementById('sub' +
+        'mit-btn');
     if (submit != null) {
       submit.addEventListener('click', main$lambda);
     }
@@ -33,6 +34,8 @@ var ktjs = function (_, Kotlin) {
     ensureNotNull(document.getElementById('ip_address')).innerHTML = ip.value;
     network_address();
     ensureNotNull(document.getElementById('subnet_mask')).innerHTML = subnet_list.get_za3lpa$(subnet_mask.selectedIndex);
+    wildcard_mask();
+    ensureNotNull(document.getElementById('cidr')).innerHTML = '/' + subnet_mask.value.toString();
   }
   function network_address() {
     var network_address = mutableListOf(['0', '0', '0', '0']);
@@ -43,6 +46,14 @@ var ktjs = function (_, Kotlin) {
       network_address.set_wxm5ur$(i, x.toString());
     }
     ensureNotNull(document.getElementById('nw_address')).innerHTML = strings_to_string(network_address);
+  }
+  function wildcard_mask() {
+    var wildcard_masks = mutableListOf(['0', '0', '0', '0']);
+    for (var i = 0; i <= 3; i++) {
+      var x = 255 - toInt(ensureNotNull(subnet_masks).get_za3lpa$(i)) | 0;
+      wildcard_masks.set_wxm5ur$(i, x.toString());
+    }
+    ensureNotNull(document.getElementById('wildcard_mask')).innerHTML = strings_to_string(wildcard_masks);
   }
   function strings_to_string(strs) {
     var str = strs.get_za3lpa$(0) + String.fromCharCode(toBoxedChar(46)) + strs.get_za3lpa$(1) + String.fromCharCode(toBoxedChar(46)) + strs.get_za3lpa$(2) + String.fromCharCode(toBoxedChar(46)) + strs.get_za3lpa$(3);
@@ -72,6 +83,7 @@ var ktjs = function (_, Kotlin) {
   _.main_kand9s$ = main;
   _.calculate = calculate;
   _.network_address = network_address;
+  _.wildcard_mask = wildcard_mask;
   _.strings_to_string_a0weo2$ = strings_to_string;
   subnet_list = listOf(['128.0.0.0', '192.0.0.0', '224.0.0.0', '240.0.0.0', '248.0.0.0', '252.0.0.0', '254.0.0.0', '255.0.0.0', '255.128.0.0', '255.192.0.0', '255.224.0.0', '255.240.0.0', '255.248.0.0', '255.252.0.0', '255.254.0.0', '255.255.0.0', '255.255.128.0', '255.255.192.0', '255.255.224.0', '255.255.240.0', '255.255.248.0', '255.255.252.0', '255.255.254.0', '255.255.255.0', '255.255.255.128', '255.255.255.192', '255.255.255.224', '255.255.255.240', '255.255.255.248', '255.255.255.252', '255.255.255.254', '255.255.255.255']);
   ips = null;
